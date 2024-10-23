@@ -1,0 +1,124 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Table `employee`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `employee` (
+  `employee_id` INT NOT NULL,
+  `l_name` VARCHAR(45) NULL,
+  `f_name` VARCHAR(45) NULL,
+  `job_title` VARCHAR(45) NULL,
+  `boss_id` INT,
+  PRIMARY KEY (`employee_id`),
+  INDEX `fk_employee_employee1_idx` (`boss_id` ASC) VISIBLE,
+  CONSTRAINT `fk_employee_employee1`
+    FOREIGN KEY (`boss_id`)
+    REFERENCES `employee` (`employee_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `Customer`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Customer` (
+  `customer_id` INT NOT NULL,
+  `f_name` VARCHAR(45) NULL,
+  `l_name` VARCHAR(45) NULL,
+  `email` VARCHAR(45) NULL,
+  `phone` VARCHAR(45) NULL,
+  `employee_id` INT NOT NULL,
+  PRIMARY KEY (`customer_id`),
+  INDEX `fk_Customer_employee1_idx` (`employee_id` ASC) VISIBLE,
+  CONSTRAINT `fk_Customer_employee1`
+    FOREIGN KEY (`employee_id`)
+    REFERENCES `employee` (`employee_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `Product`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Product` (
+  `Product_id` INT NOT NULL,
+  `product_name` VARCHAR(45) NULL,
+  `price` DECIMAL(5,2) NULL,
+  `category` VARCHAR(45) NULL,
+  PRIMARY KEY (`Product_id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `Order`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Order` (
+  `order_id` INT NOT NULL,
+  `order_date` DATE NULL,
+  `customer_id` INT NOT NULL,
+  PRIMARY KEY (`order_id`),
+  INDEX `fk_Order_Customer_idx` (`customer_id` ASC) VISIBLE,
+  CONSTRAINT `fk_Order_Customer`
+    FOREIGN KEY (`customer_id`)
+    REFERENCES `Customer` (`customer_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `Transaction`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Transaction` (
+  `transaction_id` INT NOT NULL,
+  `transaction_date` DATE NULL,
+  `payment_method` VARCHAR(45) NULL,
+  `amount_paid` DECIMAL(5,2) NULL,
+  `customer_id` INT NOT NULL,
+  PRIMARY KEY (`transaction_id`),
+  INDEX `fk_Transaction_Customer1_idx` (`customer_id` ASC) VISIBLE,
+  CONSTRAINT `fk_Transaction_Customer1`
+    FOREIGN KEY (`customer_id`)
+    REFERENCES `Customer` (`customer_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `order details`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `order details` (
+  `order_id` INT NOT NULL,
+  `product_id` INT NOT NULL,
+  `total_price` DECIMAL(5,2) NULL,
+  `quantity` INT NULL,
+  PRIMARY KEY (`order_id`, `product_id`),
+  INDEX `fk_Order_has_Product_Product1_idx` (`product_id` ASC) VISIBLE,
+  INDEX `fk_Order_has_Product_Order1_idx` (`order_id` ASC) VISIBLE,
+  CONSTRAINT `fk_Order_has_Product_Order1`
+    FOREIGN KEY (`order_id`)
+    REFERENCES `Order` (`order_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Order_has_Product_Product1`
+    FOREIGN KEY (`product_id`)
+    REFERENCES `Product` (`Product_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
