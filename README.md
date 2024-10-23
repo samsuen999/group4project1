@@ -19,7 +19,7 @@ Our task was to build a Relational Database focused on the day to day operations
 - Eric Kho [@ek29262](https://github.com/ek29262)
 - Arish Petani [@Arishpetani](https://github.com/Arishpetani)
 - Samuel Suen [@samsuen999](https://github.com/samsuen999)
-- Dan
+- Dan https://github.com/danmmosu
 
 
 
